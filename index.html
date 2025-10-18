@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Части тела — FR</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f5f6f8;
+      --card: rgba(255, 255, 255, 0.88);
+      --text: #1c1c1e;
+      --muted: #6b7280;
+      --accent: #007aff;
+      --correct-bg: rgba(52, 199, 89, 0.15);
+      --correct-border: #34c759;
+      --incorrect-bg: rgba(255, 59, 48, 0.15);
+      --incorrect-border: #ff3b30;
+      --shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+      --surface-blur: saturate(180%) blur(20px);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b0c10;
+        --card: rgba(30, 32, 36, 0.9);
+        --text: #f2f2f7;
+        --muted: #a1a1aa;
+        --accent: #0a84ff;
+        --correct-bg: rgba(52, 199, 89, 0.25);
+        --incorrect-bg: rgba(255, 69, 58, 0.25);
+        --shadow: 0 18px 60px rgba(0, 0, 0, 0.5);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 40px;
+    }
+
+    header {
+      width: 100%;
+      max-width: 880px;
+      margin-bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: clamp(1.6rem, 1.2rem + 1vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    header .progress {
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    main {
+      width: 100%;
+      max-width: 880px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .card {
+      width: 100%;
+      background: var(--card);
+      backdrop-filter: var(--surface-blur);
+      border-radius: 28px;
+      padding: clamp(20px, 4vw, 36px);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .prompt {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .prompt .fr {
+      font-size: clamp(1.8rem, 1.4rem + 1.5vw, 2.6rem);
+      font-weight: 700;
+    }
+
+    .prompt .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-family: "SFMono-Regular", ui-monospace, SFMono, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .prompt .label {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-top: 8px;
+      color: var(--muted);
+    }
+
+    .answers {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+    }
+
+    .answer-option {
+      border: none;
+      border-radius: 20px;
+      padding: 16px 18px;
+      font-size: 1rem;
+      font-weight: 600;
+      text-align: center;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+      color: var(--text);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+      cursor: pointer;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .answer-option {
+        background: linear-gradient(180deg, rgba(45, 48, 54, 0.95), rgba(25, 27, 31, 0.9));
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
+      }
+    }
+
+    .answer-option:hover:not(:disabled),
+    .answer-option:focus-visible:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+    }
+
+    .answer-option:active:not(:disabled) {
+      transform: translateY(1px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .answer-option:disabled {
+      cursor: default;
+      opacity: 0.85;
+    }
+
+    .answer-option.correct {
+      background: var(--correct-bg);
+      border: 2px solid var(--correct-border);
+      color: var(--correct-border);
+      box-shadow: none;
+    }
+
+    .answer-option.incorrect {
+      background: var(--incorrect-bg);
+      border: 2px solid var(--incorrect-border);
+      color: var(--incorrect-border);
+      box-shadow: none;
+    }
+
+    .feedback {
+      min-height: 28px;
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .controls button {
+      min-width: 140px;
+      border: none;
+      border-radius: 18px;
+      padding: 14px 22px;
+      font-size: 1rem;
+      font-weight: 600;
+      background: var(--accent);
+      color: #fff;
+      transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(0, 122, 255, 0.25);
+    }
+
+    .controls button:disabled {
+      opacity: 0.5;
+      cursor: default;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .controls button:hover:not(:disabled),
+    .controls button:focus-visible:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 28px rgba(0, 122, 255, 0.3);
+    }
+
+    .controls button:active:not(:disabled) {
+      transform: translateY(1px);
+      box-shadow: 0 6px 18px rgba(0, 122, 255, 0.25);
+    }
+
+    button:focus-visible {
+      outline: 3px solid rgba(10, 132, 255, 0.6);
+      outline-offset: 3px;
+    }
+
+    #results[hidden] {
+      display: none;
+    }
+
+    .stats-header {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .stats-header h2 {
+      margin: 0;
+      font-size: clamp(1.4rem, 1.1rem + 1vw, 2rem);
+    }
+
+    .summary {
+      font-size: 1.05rem;
+      color: var(--muted);
+    }
+
+    .history {
+      display: grid;
+      gap: 12px;
+    }
+
+    .history-item {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.6);
+      display: grid;
+      gap: 6px;
+      border: 1px solid rgba(0, 0, 0, 0.04);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .history-item {
+        background: rgba(35, 37, 43, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.04);
+      }
+    }
+
+    .history-item .term {
+      font-weight: 600;
+      font-size: 1.05rem;
+    }
+
+    .history-item .meta {
+      font-size: 0.95rem;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-family: "SFMono-Regular", ui-monospace, SFMono, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    .history-item .result {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .history-item .result span {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .history-item .icon {
+      font-size: 1.2rem;
+    }
+
+    .restart {
+      align-self: center;
+      margin-top: 12px;
+    }
+
+    @media (min-width: 768px) {
+      body {
+        padding-top: 48px;
+      }
+
+      .card {
+        border-radius: 32px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Части тела — FR</h1>
+    <div class="progress" id="progress">Раунд 1 из 10</div>
+  </header>
+  <main>
+    <section id="game" class="card" aria-live="off">
+      <div class="prompt">
+        <div class="fr" id="frText"></div>
+        <div class="meta" id="metaText"></div>
+        <div class="label">Выберите перевод:</div>
+      </div>
+      <div class="answers" id="answers" role="group" aria-label="Варианты перевода"></div>
+      <div class="feedback" id="feedback" aria-live="polite"></div>
+      <div class="controls">
+        <button type="button" id="nextButton" disabled>далее</button>
+      </div>
+    </section>
+
+    <section id="results" class="card" hidden>
+      <div class="stats-header">
+        <h2>Статистика</h2>
+        <div class="summary" id="summary"></div>
+      </div>
+      <div class="history" id="history"></div>
+      <div class="controls">
+        <button type="button" class="restart" id="restartButton">сыграть ещё раз</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const DATA = [
+      {"fr":"La tête","ipa":"/la tɛt/","ruPron":"ла тэт","ru":"голова"},
+      {"fr":"Les yeux","ipa":"/le zjø/","ruPron":"ле зьё","ru":"глаза"},
+      {"fr":"Le nez","ipa":"/lə ne/","ruPron":"лё не","ru":"нос"},
+      {"fr":"La bouche","ipa":"/la buʃ/","ruPron":"ла буш","ru":"рот"},
+      {"fr":"Les lèvres","ipa":"/le lɛvʁ/","ruPron":"ле левр","ru":"губы"},
+      {"fr":"Les dents","ipa":"/le dɑ̃/","ruPron":"ле дан","ru":"зубы"},
+      {"fr":"La langue","ipa":"/la lɑ̃ɡ/","ruPron":"ла ланг","ru":"язык"},
+      {"fr":"Les oreilles","ipa":"/lez ɔʁɛj/","ruPron":"ле зорей","ru":"уши"},
+      {"fr":"Les cheveux","ipa":"/le ʃəvø/","ruPron":"ле шевё","ru":"волосы"},
+      {"fr":"Le cou","ipa":"/lə ku/","ruPron":"лё ку","ru":"шея"},
+      {"fr":"Les épaules","ipa":"/lez epol/","ruPron":"лез эполь","ru":"плечи"},
+      {"fr":"Les bras","ipa":"/le bʁa/","ruPron":"ле бра","ru":"руки"},
+      {"fr":"Le coude","ipa":"/lə kud/","ruPron":"лё куд","ru":"локоть"},
+      {"fr":"Le poignet","ipa":"/lə pwaɲe/","ruPron":"лё пуанье","ru":"запястье"},
+      {"fr":"La main","ipa":"/la mɛ̃/","ruPron":"ла мэн","ru":"кисть"},
+      {"fr":"Les ongles","ipa":"/lez ɔ̃ɡl/","ruPron":"лез онгль","ru":"ногти"},
+      {"fr":"La poitrine","ipa":"/la pwatʁin/","ruPron":"ла пуатрин","ru":"грудь"},
+      {"fr":"Le dos","ipa":"/lə do/","ruPron":"лё до","ru":"спина"},
+      {"fr":"Le nombril","ipa":"/lə nɔ̃bʁil/","ruPron":"лё номбхрил","ru":"пупок"},
+      {"fr":"L’abdomen","ipa":"/labdɔmɛn/","ruPron":"лабдомен","ru":"живот"},
+      {"fr":"Les hanches","ipa":"/le ɑ̃ʃ/","ruPron":"лез анш","ru":"бёдра"},
+      {"fr":"Les jambes","ipa":"/le ʒɑ̃b/","ruPron":"ле жамб","ru":"ноги"},
+      {"fr":"Le genou","ipa":"/lə ʒənu/","ruPron":"лё жёну","ru":"колено"},
+      {"fr":"La cheville","ipa":"/la ʃəvij/","ruPron":"ла шевий","ru":"щиколотка"},
+      {"fr":"Le pied","ipa":"/lə pje/","ruPron":"лё пье","ru":"стопа/нога"},
+      {"fr":"Les orteils","ipa":"/lez ɔʁtɛj/","ruPron":"лез ортей","ru":"пальцы ноги"}
+    ];
+
+    const TOTAL_ROUNDS = 10;
+
+    const state = {
+      currentRound: 0,
+      score: 0,
+      selected: [],
+      answered: false,
+      history: [],
+      currentOptions: []
+    };
+
+    const progressEl = document.getElementById('progress');
+    const frTextEl = document.getElementById('frText');
+    const metaTextEl = document.getElementById('metaText');
+    const answersEl = document.getElementById('answers');
+    const feedbackEl = document.getElementById('feedback');
+    const nextButton = document.getElementById('nextButton');
+    const gameSection = document.getElementById('game');
+    const resultsSection = document.getElementById('results');
+    const summaryEl = document.getElementById('summary');
+    const historyEl = document.getElementById('history');
+    const restartButton = document.getElementById('restartButton');
+
+    function shuffle(array) {
+      const arr = array.slice();
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function pickOptions(correct, pool) {
+      const distractors = [];
+      const candidates = pool.filter(item => item.ru !== correct.ru);
+      const shuffled = shuffle(candidates);
+      for (let i = 0; i < shuffled.length && distractors.length < 5; i++) {
+        const candidate = shuffled[i];
+        if (!distractors.some(item => item.ru === candidate.ru)) {
+          distractors.push(candidate);
+        }
+      }
+      const options = shuffle([correct, ...distractors.slice(0, 5)]);
+      return options;
+    }
+
+    function startGame() {
+      state.currentRound = 0;
+      state.score = 0;
+      state.answered = false;
+      state.history = new Array(TOTAL_ROUNDS);
+      state.selected = shuffle(DATA).slice(0, TOTAL_ROUNDS);
+      gameSection.hidden = false;
+      resultsSection.hidden = true;
+      renderRound();
+    }
+
+    function renderRound() {
+      const roundItem = state.selected[state.currentRound];
+      state.answered = false;
+      state.currentOptions = pickOptions(roundItem, DATA);
+
+      progressEl.textContent = `Раунд ${state.currentRound + 1} из ${TOTAL_ROUNDS}`;
+      frTextEl.textContent = roundItem.fr;
+      metaTextEl.innerHTML = `<span>${roundItem.ipa}</span><span>${roundItem.ruPron}</span>`;
+      feedbackEl.textContent = '';
+      nextButton.disabled = true;
+
+      answersEl.innerHTML = '';
+      state.currentOptions.forEach(option => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'answer-option';
+        button.textContent = option.ru;
+        button.dataset.ru = option.ru;
+        button.setAttribute('aria-pressed', 'false');
+        button.addEventListener('click', () => handleAnswer(option.ru));
+        answersEl.appendChild(button);
+      });
+    }
+
+    function handleAnswer(selectedRu) {
+      if (state.answered) return;
+      const roundItem = state.selected[state.currentRound];
+      const correctRu = roundItem.ru;
+      const buttons = Array.from(answersEl.querySelectorAll('button'));
+
+      state.answered = true;
+      nextButton.disabled = false;
+
+      let isCorrect = selectedRu === correctRu;
+      if (isCorrect) {
+        state.score += 1;
+      }
+
+      buttons.forEach(btn => {
+        const value = btn.dataset.ru;
+        btn.disabled = true;
+        const pressed = value === selectedRu;
+        btn.setAttribute('aria-pressed', pressed ? 'true' : 'false');
+        if (value === correctRu) {
+          btn.classList.add('correct');
+        }
+        if (value === selectedRu && !isCorrect) {
+          btn.classList.add('incorrect');
+        }
+      });
+
+      showFeedback(isCorrect, correctRu);
+      state.history[state.currentRound] = {
+        item: roundItem,
+        correct: isCorrect,
+        chosen: selectedRu
+      };
+    }
+
+    function showFeedback(isCorrect, correctRu) {
+      if (isCorrect) {
+        feedbackEl.textContent = 'Правильно!';
+      } else {
+        feedbackEl.textContent = `Неправильно. Правильный ответ: «${correctRu}».`;
+      }
+    }
+
+    function nextRound() {
+      if (!state.answered) return;
+      state.currentRound += 1;
+      if (state.currentRound >= TOTAL_ROUNDS) {
+        finishGame();
+      } else {
+        renderRound();
+      }
+    }
+
+    function finishGame() {
+      gameSection.hidden = true;
+      resultsSection.hidden = false;
+      summaryEl.textContent = `Правильных ответов: ${state.score} из ${TOTAL_ROUNDS}`;
+      historyEl.innerHTML = '';
+
+      state.history.forEach((entry, index) => {
+        if (!entry) return;
+        const { item, correct } = entry;
+        const historyItem = document.createElement('div');
+        historyItem.className = 'history-item';
+        const icon = correct ? '✓' : '✗';
+        historyItem.innerHTML = `
+          <div class="term">${index + 1}. ${item.fr}</div>
+          <div class="meta"><span>${item.ipa}</span><span>${item.ruPron}</span></div>
+          <div class="result"><span>→ ${item.ru}</span><span class="icon">${icon}</span></div>
+        `;
+        historyEl.appendChild(historyItem);
+      });
+    }
+
+    function restartGame() {
+      startGame();
+    }
+
+    nextButton.addEventListener('click', nextRound);
+    restartButton.addEventListener('click', restartGame);
+
+    startGame();
+  </script>
+</body>
+</html>
