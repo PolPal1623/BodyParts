@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Части тела — FR</title>
+  <title>French Learning Suite · Части тела</title>
   <style>
     :root {
       color-scheme: light dark;
@@ -41,12 +41,74 @@
       margin: 0;
       min-height: 100vh;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      background: var(--bg);
+      background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.12), transparent 24%),
+        radial-gradient(circle at top right, rgba(249, 115, 22, 0.1), transparent 18%),
+        var(--bg);
       color: var(--text);
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 24px 16px 40px;
+    }
+
+    .suite-bar {
+      width: 100%;
+      max-width: 880px;
+      margin-bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .suite-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .suite-badge::before {
+      content: "";
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #2563eb, #f97316);
+      box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.12);
+    }
+
+    .suite-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .suite-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      text-decoration: none;
+      color: var(--text);
+      background: var(--card);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+    }
+
+    .suite-link:hover,
+    .suite-link:focus-visible {
+      background: var(--accent);
+      color: #fff;
+      outline: none;
+      transform: translateY(-1px);
     }
 
     header {
@@ -312,9 +374,16 @@
   </style>
 </head>
 <body>
+  <div class="suite-bar">
+    <a class="suite-badge" href="https://polpal1623.github.io/FrenchLibrary/">French Learning Suite</a>
+    <div class="suite-actions">
+      <a class="suite-link" href="https://polpal1623.github.io/FrenchLibrary/">Все приложения</a>
+      <a class="suite-link" href="https://github.com/PolPal1623/BodyParts">GitHub</a>
+    </div>
+  </div>
   <header>
     <h1>Части тела — FR</h1>
-    <div class="progress" id="progress">Раунд 1 из 10</div>
+    <div class="progress" id="progress">Раунд 1 из 10 · 26 слов в словаре</div>
   </header>
   <main>
     <section id="game" class="card" aria-live="off">
@@ -434,7 +503,7 @@
       state.answered = false;
       state.currentOptions = pickOptions(roundItem, DATA);
 
-      progressEl.textContent = `Раунд ${state.currentRound + 1} из ${TOTAL_ROUNDS}`;
+      progressEl.textContent = `Раунд ${state.currentRound + 1} из ${TOTAL_ROUNDS} · ${DATA.length} слов в словаре`;
       frTextEl.textContent = roundItem.fr;
       metaTextEl.innerHTML = `<span>${roundItem.ipa}</span><span>${roundItem.ruPron}</span>`;
       feedbackEl.textContent = '';
